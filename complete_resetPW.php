@@ -1,12 +1,7 @@
 <?php
 session_start();
-<<<<<<< HEAD
 require_once 'src/utils/db_connect.php';
 require_once 'src/utils/functions.php';
-=======
-require_once 'includes/db.php';
-require_once 'includes/functions.php';
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
 
 // Kiểm tra xem email đã được xác thực chưa
 if (!isset($_SESSION['verified_email'])) {
@@ -76,10 +71,7 @@ if (isset($_POST['resetPW'])) {
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
-<<<<<<< HEAD
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-=======
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
 </head>
 
 <body>
@@ -99,7 +91,6 @@ if (isset($_POST['resetPW'])) {
             <form method="POST" action="">
                 <div class="mb-3">
                     <label for="password" class="form-label">Mật khẩu mới</label>
-<<<<<<< HEAD
                     <div class="input-group">
                         <input type="password" class="form-control" name="password" id="password"
                             pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
@@ -108,17 +99,11 @@ if (isset($_POST['resetPW'])) {
                             <i class="fa-solid fa-eye"></i>
                         </button>
                     </div>
-=======
-                    <input type="password" class="form-control" name="password" id="password"
-                        pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
-                        title="Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ và số" required>
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
                     <div class="form-text">Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ và số</div>
                 </div>
 
                 <div class="mb-3">
                     <label for="confirm_password" class="form-label">Xác nhận mật khẩu</label>
-<<<<<<< HEAD
                     <div class="input-group">
                         <input type="password" class="form-control" name="confirm_password"
                             id="confirm_password" required>
@@ -126,10 +111,6 @@ if (isset($_POST['resetPW'])) {
                             <i class="fa-solid fa-eye"></i>
                         </button>
                     </div>
-=======
-                    <input type="password" class="form-control" name="confirm_password"
-                        id="confirm_password" required>
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
                 </div>
 
                 <div class="d-grid gap-2">
@@ -145,7 +126,6 @@ if (isset($_POST['resetPW'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
-<<<<<<< HEAD
     <script>
     document.querySelectorAll('.toggle-password').forEach(btn => {
         btn.addEventListener('mousedown', function() {
@@ -162,8 +142,6 @@ if (isset($_POST['resetPW'])) {
         });
     });
     </script>
-=======
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
 </body>
 
 </html>

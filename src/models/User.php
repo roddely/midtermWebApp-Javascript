@@ -1,16 +1,9 @@
 <?php
-<<<<<<< HEAD
 require_once __DIR__ . '/../config/db_config.php';
 
 class User {
     private $conn;
     public $exceptions = false;
-=======
-require_once __DIR__ . '/../config/database.php';
-
-class User {
-    private $conn;
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
     
     public function __construct($conn) {
         $this->conn = $conn;

@@ -1,19 +1,13 @@
 <?php
 session_start();
-<<<<<<< HEAD
 require_once 'src/utils/db_connect.php';
 require_once 'src/utils/mail_service.php';
-=======
-require_once 'src/config/database.php';
-require_once 'src/utils/mail.php';
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
 
 // Đầu register.php, sau session_start()
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 function generateUUID() {
     return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-<<<<<<< HEAD
 mt_rand(0, 0xffff), 
         mt_rand(0, 0xffff),
         mt_rand(0, 0xffff),
@@ -22,13 +16,6 @@ mt_rand(0, 0xffff),
         mt_rand(0, 0xffff), 
         mt_rand(0, 0xffff), 
         mt_rand(0, 0xffff)
-=======
-        mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-        mt_rand(0, 0xffff),
-        mt_rand(0, 0x0fff) | 0x4000,
-        mt_rand(0, 0x3fff) | 0x8000,
-        mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
     );
 }
 
@@ -51,31 +38,19 @@ if(isset($_POST['verify_email'])) {
             // Tạo mã xác thực mới
             $verification_id = generateUUID();
             $token = generateVerificationToken();
-<<<<<<< HEAD
             $expires_at = date('Y-m-d H:i:s', strtotime('+5 minutes'));
-=======
-            $expires_at = date('Y-m-d H:i:s', strtotime('+15 minutes'));
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
             
             // Lưu thông tin xác thực
             $stmt = $conn->prepare("INSERT INTO email_verification (id, email, token, expires_at) VALUES (?, ?, ?, ?)");
             if($stmt->execute([$verification_id, $email, $token, $expires_at])) {
                 // Gửi email xác thực
-<<<<<<< HEAD
                 if(sendVerificationEmail($email, $token, $mailError)) {
-=======
-                if(sendVerificationEmail($email, $token)) {
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
                     $_SESSION['verify_source'] = 'register';
                     $_SESSION['verify_email'] = $email;
                     $_SESSION['verification_id'] = $verification_id;
                     header("Location: verify.php");
                     exit();
-<<<<<<< HEAD
                  } else {
-=======
-                } else {
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
                     $error = "Không thể gửi email xác thực. Vui lòng thử lại sau.";
                 }
             } else {

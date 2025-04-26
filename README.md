@@ -1,19 +1,12 @@
 ﻿=======================================
 Thiết lập Database
 =======================================
-<<<<<<< HEAD
 
 Chạy file sql
 Vào db_config.php
 Chỉnh lại Host của database
 
 composer require phpmailer/phpmailer
-=======
-Chạy file sql
-
-Vào database.php
-Chỉnh lại Host của database
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
 
 =======================================
 Thiết lập gửi mail
@@ -53,28 +46,13 @@ Thiết lập gửi mail
     Thử:
     - ping smtp.gmail.com
       Kiểm tra port 587:
-<<<<<<< HEAD
     - telnet smtp.gmail.com 587 (Nếu văng sang nội dung khác thì ổn)
 5.  Kiểm tra cài đặt PHP:
     Tìm file php.ini trong máy
     Đảm bảo "extension=openssl" được bật (bỏ dấu ; ở đầu dòng)
-=======
-    - telnet smtp.gmail.com 587
-5.  Kiểm tra cài đặt PHP:
-    Tìm file php.ini trong máy
-    Đảm bảo extension=openssl được bật (bỏ dấu ; ở đầu dòng)
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
     Tìm và kiểm tra các cài đặt SMTP:
     - SMTP=smtp.gmail.com
     - smtp_port=587
 6.  Kiểm tra antivirus:
     Tạm thời tắt antivirus để test
     Nếu gửi mail được khi tắt antivirus, thêm ngoại lệ cho ứng dụng của bạn
-<<<<<<< HEAD
-=======
-7.  Test kết nối:
-    Mở terminal
-    Thử test kết nối đến Gmail:
-    - telnet smtp.gmail.com 587
-      Nếu kết nối được, bạn sẽ thấy response 220
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953

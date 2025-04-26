@@ -1,12 +1,7 @@
 <?php
 session_start();
-<<<<<<< HEAD
 require_once 'src/utils/db_connect.php';
 require_once 'src/utils/mail_service.php';
-=======
-require_once 'src/config/database.php';
-require_once 'src/utils/mail.php';
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
 
 // Đầu register.php, sau session_start()
 date_default_timezone_set('Asia/Ho_Chi_Minh');

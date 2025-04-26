@@ -53,7 +53,6 @@ CREATE TABLE user_profiles (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-<<<<<<< HEAD
 -- Bảng login_attempts_ip để lưu số lần đăng nhập sai theo IP và thời gian khóa
 CREATE TABLE login_attempts_ip (
     ip VARCHAR(45) PRIMARY KEY,
@@ -62,8 +61,6 @@ CREATE TABLE login_attempts_ip (
     lock_until DATETIME
 );
 
-=======
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
 -- Index để tối ưu tìm kiếm
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_user_sessions_token ON user_sessions(token);

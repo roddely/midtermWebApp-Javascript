@@ -1,10 +1,6 @@
 <?php
 session_start();
-<<<<<<< HEAD
 require_once 'src/utils/db_connect.php';
-=======
-require_once 'includes/db.php';
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
 
 function generateUUID()
 {
@@ -26,7 +22,6 @@ function generateSessionToken()
     return bin2hex(random_bytes(32));
 }
 
-<<<<<<< HEAD
 function getUserIP() {
     if (!empty($_SERVER['HTTP_CLIENT_IP'])) return $_SERVER['HTTP_CLIENT_IP'];
     if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) return $_SERVER['HTTP_X_FORWARDED_FOR'];
@@ -40,13 +35,10 @@ function getLockDuration($attempts) {
     return 60 * 60; // 1 tiếng
 }
 
-=======
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
 if (isset($_POST['login'])) {
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
 
-<<<<<<< HEAD
     $ip = getUserIP();
     $stmt = $conn->prepare("SELECT attempts, lock_until FROM login_attempts_ip WHERE ip = ?");
     $stmt->execute([$ip]);
@@ -100,32 +92,6 @@ if (isset($_POST['login'])) {
                     $stmt->execute([$ip]);
                 }
             }
-=======
-    if (empty($email) || empty($password)) {
-        $error = "Vui lòng điền đầy đủ thông tin";
-    } else {
-        $stmt = $conn->prepare("SELECT id, name, password_hash FROM users WHERE email = ?");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
-
-        if ($user && password_verify($password, $user['password_hash'])) {
-            // Tạo session mới
-            $session_id = generateUUID();
-            $token = generateSessionToken();
-            $expires_at = date('Y-m-d H:i:s', strtotime('+24 hours'));
-
-            $stmt = $conn->prepare("INSERT INTO user_sessions (id, user_id, token, expires_at) VALUES (?, ?, ?, ?)");
-            $stmt->execute([$session_id, $user['id'], $token, $expires_at]);
-
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_name'] = $user['name'];
-            $_SESSION['session_token'] = $token;
-
-            header("Location: index.php");
-            exit();
-        } else {
-            $error = "Email hoặc mật khẩu không chính xác";
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
         }
     }
 }
@@ -141,10 +107,7 @@ if (isset($_POST['login'])) {
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
-<<<<<<< HEAD
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-=======
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
 </head>
 
 <body>
@@ -164,25 +127,17 @@ if (isset($_POST['login'])) {
             <form method="POST" action="">
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
-<<<<<<< HEAD
                     <input type="email" class="form-control" name="email" id="email" required value="<?php echo isset($email) ? htmlspecialchars($email) : ''; ?>">
-=======
-                    <input type="email" class="form-control" name="email" id="email" required>
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
                 </div>
 
                 <div class="mb-3">
                     <label for="password" class="form-label">Mật khẩu</label>
-<<<<<<< HEAD
                     <div class="input-group">
                         <input type="password" class="form-control" name="password" id="password" required>
                         <button class="btn btn-outline-secondary toggle-password" type="button" tabindex="-1">
                             <i class="fa-solid fa-eye"></i>
                         </button>
                     </div>
-=======
-                    <input type="password" class="form-control" name="password" id="password" required>
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
                     <div class="text-end mt-2">
                         <a href="otp_resetPW.php" class="text-muted">Quên mật khẩu?</a>
                     </div>
@@ -203,7 +158,6 @@ if (isset($_POST['login'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
-<<<<<<< HEAD
     <script>
     document.querySelectorAll('.toggle-password').forEach(btn => {
         btn.addEventListener('mousedown', function() {
@@ -220,8 +174,6 @@ if (isset($_POST['login'])) {
         });
     });
     </script>
-=======
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
 </body>
 
 </html>
