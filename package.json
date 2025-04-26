@@ -1,0 +1,12 @@
+{
+  "name": "midtermwebapp-nhathao",
+  "version": "1.0.0",
+  "description": "======================================= Thiết lập Database ======================================= Chạy file sql",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
