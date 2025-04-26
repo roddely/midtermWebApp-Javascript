@@ -1,5 +1,4 @@
 <?php
-<<<<<<< HEAD
 
 /**
  * PHPMailer RFC821 SMTP email transport class.
@@ -36,7 +35,7 @@ class SMTP
      *
      * @var string
      */
-    const VERSION = '6.10.0';
+    const VERSION = '6.9.3';
 
     /**
      * SMTP line break constant.
@@ -161,15 +160,6 @@ class SMTP
     public $do_verp = false;
 
     /**
-     * Whether to use SMTPUTF8.
-     *
-     * @see https://www.rfc-editor.org/rfc/rfc6531
-     *
-     * @var bool
-     */
-    public $do_smtputf8 = false;
-
-    /**
      * The timeout value for connection, in seconds.
      * Default of 5 minutes (300sec) is from RFC2821 section 4.5.3.2.
      * This needs to be quite high to function correctly with hosts using greetdelay as an anti-spam measure.
@@ -288,27 +278,16 @@ class SMTP
         if ($level > $this->do_debug) {
             return;
         }
-        //Is this a PSR-3 logger?
-        if ($this->Debugoutput instanceof \Psr\Log\LoggerInterface) {
-            //Remove trailing line breaks potentially added by calls to SMTP::client_send()
-            $this->Debugoutput->debug(rtrim($str, "\r\n"));
-
-            return;
-        }
         //Avoid clash with built-in function names
         if (is_callable($this->Debugoutput) && !in_array($this->Debugoutput, ['error_log', 'html', 'echo'])) {
             call_user_func($this->Debugoutput, $str, $level);
-
             return;
         }
         switch ($this->Debugoutput) {
             case 'error_log':
-                //Don't output, just log
-                /** @noinspection ForgottenDebugOutputInspection */
                 error_log($str);
                 break;
             case 'html':
-                //Cleans up output a bit for a better looking, HTML-safe output
                 echo gmdate('Y-m-d H:i:s'), ' ', htmlentities(
                     preg_replace('/[\r\n]+/', '', $str),
                     ENT_QUOTES,
@@ -317,13 +296,9 @@ class SMTP
                 break;
             case 'echo':
             default:
-                //Normalize line breaks
-                $str = preg_replace('/\r\n|\r/m', "\n", $str);
                 echo gmdate('Y-m-d H:i:s'),
                 "\t",
-                    //Trim trailing space
                 trim(
-                    //Indent for readability, except for trailing break
                     str_replace(
                         "\n",
                         "\n                   \t                  ",
@@ -482,71 +457,12 @@ class SMTP
      *
      * @return bool
      */
-=======
-namespace PHPMailer\PHPMailer;
-
-class SMTP
-{
-    const VERSION = '6.8.1';
-    const CRLF = "\r\n";
-    const DEFAULT_SMTP_PORT = 25;
-    const MAX_LINE_LENGTH = 998;
-    const DEBUG_OFF = 0;
-    const DEBUG_CLIENT = 1;
-    const DEBUG_SERVER = 2;
-    const DEBUG_CONNECTION = 3;
-    const DEBUG_LOWLEVEL = 4;
-
-    protected $do_debug = self::DEBUG_OFF;
-    protected $Debugoutput = 'echo';
-    protected $do_verp = false;
-    protected $Timeout = 300;
-    protected $Timelimit = 300;
-    protected $smtp_conn;
-    protected $error = ['error' => '', 'detail' => '', 'smtp_code' => '', 'smtp_code_ex' => ''];
-    protected $helo_rply = '';
-    protected $server_caps = [];
-    protected $last_reply = '';
-
-    public function connect($host, $port = null, $timeout = 30)
-    {
-        $this->error = ['error' => '', 'detail' => '', 'smtp_code' => '', 'smtp_code_ex' => ''];
-        
-        if ($this->connected()) {
-            $this->error = ['error' => 'Already connected to a server'];
-            return false;
-        }
-
-        if (empty($port)) {
-            $port = self::DEFAULT_SMTP_PORT;
-        }
-
-        $this->smtp_conn = @fsockopen(
-            $host,
-            $port,
-            $errno,
-            $errstr,
-            $timeout
-        );
-
-        if (empty($this->smtp_conn)) {
-            $this->error = ['error' => 'Failed to connect to server',
-                          'detail' => $errstr,
-                          'smtp_code' => $errno];
-            return false;
-        }
-
-        return true;
-    }
-
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
     public function startTLS()
     {
         if (!$this->sendCommand('STARTTLS', 'STARTTLS', 220)) {
             return false;
         }
 
-<<<<<<< HEAD
         //Allow the best TLS version(s) we can
         $crypto_method = STREAM_CRYPTO_METHOD_TLS_CLIENT;
 
@@ -750,32 +666,11 @@ class SMTP
      *
      * @return bool True if connected
      */
-=======
-        if (!stream_socket_enable_crypto(
-            $this->smtp_conn,
-            true,
-            STREAM_CRYPTO_METHOD_TLS_CLIENT
-        )) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function authenticate($username, $password)
-    {
-        $this->sendCommand('AUTH LOGIN', 'AUTH LOGIN', 334);
-        $this->sendCommand(base64_encode($username), base64_encode($username), 334);
-        return $this->sendCommand(base64_encode($password), base64_encode($password), 235);
-    }
-
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
     public function connected()
     {
         if (is_resource($this->smtp_conn)) {
             $sock_status = stream_get_meta_data($this->smtp_conn);
             if ($sock_status['eof']) {
-<<<<<<< HEAD
                 //The socket is valid but we are not connected
                 $this->edebug(
                     'SMTP NOTICE: EOF caught while checking if connected',
@@ -826,37 +721,10 @@ class SMTP
     public function data($msg_data)
     {
         //This will use the standard timelimit
-=======
-                return false;
-            }
-            return true;
-        }
-        return false;
-    }
-
-    public function hello($host = '')
-    {
-        return $this->sendCommand('EHLO ' . $host, 'EHLO ' . $host, 250);
-    }
-
-    public function mail($from)
-    {
-        return $this->sendCommand('MAIL FROM:<' . $from . '>', 'MAIL FROM:<' . $from . '>', 250);
-    }
-
-    public function recipient($address)
-    {
-        return $this->sendCommand('RCPT TO:<' . $address . '>', 'RCPT TO:<' . $address . '>', [250, 251]);
-    }
-
-    public function data($msg_data)
-    {
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
         if (!$this->sendCommand('DATA', 'DATA', 354)) {
             return false;
         }
 
-<<<<<<< HEAD
         /* The server is ready to accept data!
          * According to rfc821 we should not send more than 1000 characters on a single line (including the LE)
          * so we will break the data up into lines by \r and/or \n then if needed we will break each of those into
@@ -1030,15 +898,7 @@ class SMTP
      * $from. Returns true if successful or false otherwise. If True
      * the mail transaction is started and then one or more recipient
      * commands may be called followed by a data command.
-     * Implements RFC 821: MAIL <SP> FROM:<reverse-path> <CRLF> and
-     * two extensions, namely XVERP and SMTPUTF8.
-     *
-     * The server's EHLO response is not checked. If use of either
-     * extensions is enabled even though the server does not support
-     * that, mail submission will fail.
-     *
-     * XVERP is documented at https://www.postfix.org/VERP_README.html
-     * and SMTPUTF8 is specified in RFC 6531.
+     * Implements RFC 821: MAIL <SP> FROM:<reverse-path> <CRLF>.
      *
      * @param string $from Source address of this message
      *
@@ -1047,11 +907,10 @@ class SMTP
     public function mail($from)
     {
         $useVerp = ($this->do_verp ? ' XVERP' : '');
-        $useSmtputf8 = ($this->do_smtputf8 ? ' SMTPUTF8' : '');
 
         return $this->sendCommand(
             'MAIL FROM',
-            'MAIL FROM:<' . $from . '>' . $useSmtputf8 . $useVerp,
+            'MAIL FROM:<' . $from . '>' . $useVerp,
             250
         );
     }
@@ -1491,26 +1350,6 @@ class SMTP
     }
 
     /**
-     * Enable or disable use of SMTPUTF8.
-     *
-     * @param bool $enabled
-     */
-    public function setSMTPUTF8($enabled = false)
-    {
-        $this->do_smtputf8 = $enabled;
-    }
-
-    /**
-     * Get SMTPUTF8 use.
-     *
-     * @return bool
-     */
-    public function getSMTPUTF8()
-    {
-        return $this->do_smtputf8;
-    }
-
-    /**
      * Set error messages and codes.
      *
      * @param string $message      The error message
@@ -1653,56 +1492,3 @@ class SMTP
         return $this->last_smtp_transaction_id;
     }
 }
-=======
-        $msg_data = str_replace("\r\n.", "\r\n..", $msg_data);
-        $msg_data = substr($msg_data, 0, -2);
-        $msg_data .= self::CRLF . '.' . self::CRLF;
-
-        return $this->sendCommand($msg_data, '', 250);
-    }
-
-    public function quit()
-    {
-        return $this->sendCommand('QUIT', 'QUIT', 221);
-    }
-
-    protected function sendCommand($command, $commandstring, $expect)
-    {
-        if (!$this->connected()) {
-            $this->error = ['error' => 'Called sendCommand() without being connected'];
-            return false;
-        }
-
-        fputs($this->smtp_conn, $command . self::CRLF);
-
-        $reply = $this->getLines();
-        $code = substr($reply, 0, 3);
-
-        if (!is_array($expect)) {
-            $expect = [$expect];
-        }
-
-        if (!in_array($code, $expect)) {
-            $this->error = ['error' => "$command command failed",
-                          'smtp_code' => $code,
-                          'detail' => substr($reply, 4)];
-            return false;
-        }
-
-        $this->last_reply = $reply;
-        return true;
-    }
-
-    protected function getLines()
-    {
-        $data = '';
-        while ($str = fgets($this->smtp_conn, 515)) {
-            $data .= $str;
-            if (substr($str, 3, 1) == ' ') {
-                break;
-            }
-        }
-        return $data;
-    }
-} 
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953

@@ -1,8 +1,14 @@
 <?php
 session_start();
+<<<<<<< HEAD
 require_once 'src/utils/db_connect.php';
 require_once 'src/utils/functions.php';
 require_once 'src/utils/mail_service.php';
+=======
+require_once 'src/config/database.php';
+require_once 'src/utils/functions.php';
+require_once 'src/utils/mail.php';
+>>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
 
 date_default_timezone_set('Asia/Ho_Chi_Minh'); //Đặt múi giờ cho Việt Nam
 
@@ -104,7 +110,11 @@ if(isset($_POST['resend'])) {
                 
                 <div class="d-grid gap-2">
                     <button type="submit" name="verify" class="btn btn-primary">Xác thực</button>
+<<<<<<< HEAD
                     <button type="submit" name="resend" class="btn btn-outline-primary" formnovalidate>
+=======
+                    <button type="submit" name="resend" class="btn btn-outline-primary">
+>>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
                         Gửi lại mã xác thực
                     </button>
                 </div>
@@ -125,6 +135,7 @@ if(isset($_POST['resend'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
+<<<<<<< HEAD
     <script>
     let resendBtn = document.querySelector('button[name="resend"]');
     let countdown = 0;
@@ -153,5 +164,7 @@ if(isset($_POST['resend'])) {
         startCountdown(60);
     <?php endif; ?>
     </script>
+=======
+>>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
 </body>
 </html> 

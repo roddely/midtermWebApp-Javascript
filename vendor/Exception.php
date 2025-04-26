@@ -1,5 +1,4 @@
 <?php
-<<<<<<< HEAD
 
 /**
  * PHPMailer Exception class.
@@ -39,14 +38,3 @@ class Exception extends \Exception
         return '<strong>' . htmlspecialchars($this->getMessage(), ENT_COMPAT | ENT_HTML401) . "</strong><br />\n";
     }
 }
-=======
-namespace PHPMailer\PHPMailer;
-
-class Exception extends \Exception
-{
-    public function errorMessage()
-    {
-        return '<strong>' . htmlspecialchars($this->getMessage()) . "</strong><br />\n";
-    }
-} 
->>>>>>> c9253647bd2e4ed82ff64d607488f450c332b953
