@@ -1,6 +1,9 @@
 <?php
-session_start();
+require_once 'vendor/autoload.php';
 require_once 'src/utils/db_connect.php';
+require_once 'src/utils/jwt_auth.php';
+
+$ga = new PHPGangsta_GoogleAuthenticator();
 
 function generateUUID()
 {
@@ -30,9 +33,9 @@ function getUserIP() {
 
 function getLockDuration($attempts) {
     if ($attempts <= 3) return 0;
-    if ($attempts <= 6) return 15 * 60; // 15 phút
-    if ($attempts <= 9) return 30 * 60; // 30 phút
-    return 60 * 60; // 1 tiếng
+    if ($attempts <= 6) return 15 * 60;
+    if ($attempts <= 9) return 30 * 60;
+    return 60 * 60;
 }
 
 if (isset($_POST['login'])) {
@@ -52,32 +55,29 @@ if (isset($_POST['login'])) {
         if (empty($email) || empty($password)) {
             $error = "Vui lòng điền đầy đủ thông tin";
         } else {
-            $stmt = $conn->prepare("SELECT id, name, password_hash FROM users WHERE email = ?");
+            $stmt = $conn->prepare("SELECT id, name, password_hash, two_factor_enabled, two_factor_secret FROM users WHERE email = ?");
             $stmt->execute([$email]);
             $user = $stmt->fetch();
 
             if ($user && password_verify($password, $user['password_hash'])) {
-                // Đăng nhập đúng: reset attempts theo IP
                 $stmt = $conn->prepare("DELETE FROM login_attempts_ip WHERE ip = ?");
                 $stmt->execute([$ip]);
 
-                // Tạo session mới
-                $session_id = generateUUID();
-                $token = generateSessionToken();
-                $expires_at = date('Y-m-d H:i:s', strtotime('+24 hours'));
-
-                $stmt = $conn->prepare("INSERT INTO user_sessions (id, user_id, token, expires_at) VALUES (?, ?, ?, ?)");
-                $stmt->execute([$session_id, $user['id'], $token, $expires_at]);
-
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_name'] = $user['name'];
-                $_SESSION['session_token'] = $token;
-
-                header("Location: index.php");
-                exit();
+                if ($user['two_factor_enabled']) {
+                    session_start();
+                    $_SESSION['temp_user_id'] = $user['id'];
+                    $_SESSION['temp_user_name'] = $user['name'];
+                    $_SESSION['two_factor_secret'] = $user['two_factor_secret'];
+                    header("Location: verify_2fa.php");
+                    exit();
+                } else {
+                    $jwt = create_jwt($user['id'], $user['name']);
+                    setcookie('auth_token', $jwt, time() + JWT_EXPIRE, '/', '', false, true);
+                    header("Location: index.php");
+                    exit();
+                }
             } else {
                 $error = "Email hoặc mật khẩu không chính xác";
-                // Đăng nhập sai: tăng attempts theo IP
                 $stmt = $conn->prepare("SELECT attempts FROM login_attempts_ip WHERE ip = ?");
                 $stmt->execute([$ip]);
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -104,7 +104,6 @@ if (isset($_POST['login'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng nhập</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -154,10 +153,7 @@ if (isset($_POST['login'])) {
         </div>
     </div>
 
-    <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Font Awesome -->
-    <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
     <script>
     document.querySelectorAll('.toggle-password').forEach(btn => {
         btn.addEventListener('mousedown', function() {

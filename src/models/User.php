@@ -13,11 +13,9 @@ class User {
         try {
             $this->conn->beginTransaction();
             
-            // Thêm user mới
             $stmt = $this->conn->prepare("INSERT INTO users (id, name, email, password_hash) VALUES (?, ?, ?, ?)");
             $stmt->execute([$id, $name, $email, $password_hash]);
             
-            // Tạo profile mặc định
             $stmt = $this->conn->prepare("INSERT INTO user_profiles (user_id) VALUES (?)");
             $stmt->execute([$id]);
             

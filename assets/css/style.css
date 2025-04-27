@@ -68,7 +68,6 @@ body {
   text-decoration: underline;
 }
 
-/* Navbar Styling */
 .navbar {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -78,7 +77,6 @@ body {
   color: #fff !important;
 }
 
-/* Dashboard Styling */
 .dashboard-container {
   padding: 2rem;
 }
@@ -96,7 +94,6 @@ body {
   margin-bottom: 1rem;
 }
 
-/* Alert Styling */
 .alert {
   border-radius: 8px;
   padding: 1rem;

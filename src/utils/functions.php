@@ -18,12 +18,10 @@ function isValidEmail($email) {
 }
 
 function isStrongPassword($password) {
-    // Ít nhất 8 ký tự
     if (strlen($password) < 8) {
         return false;
     }
     
-    // Phải chứa ít nhất một chữ cái và một số
     if (!preg_match('/[A-Za-z]/', $password) || !preg_match('/\d/', $password)) {
         return false;
     }

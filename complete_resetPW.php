@@ -3,7 +3,6 @@ session_start();
 require_once 'src/utils/db_connect.php';
 require_once 'src/utils/functions.php';
 
-// Kiểm tra xem email đã được xác thực chưa
 if (!isset($_SESSION['verified_email'])) {
     header("Location: register.php");
     exit();
@@ -18,17 +17,14 @@ if (isset($_POST['resetPW'])) {
     } elseif ($password !== $confirm_password) {
         $error = "Mật khẩu xác nhận không khớp";
     } else {
-        // Tạo mật khẩu mới
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
         try {
             $conn->beginTransaction();
 
-            // Cập nhật mật khẩu mớimới
             $stmt = $conn->prepare("UPDATE users SET password_hash = ? WHERE email = ?");
             $stmt->execute([$password_hash, $_SESSION['verified_email']]);
 
-            // Kiểm tra và tạo profile nếu chưa có
             $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
             $stmt->execute([$_SESSION['verified_email']]);
             $user = $stmt->fetch();
@@ -37,7 +33,6 @@ if (isset($_POST['resetPW'])) {
                 $stmt = $conn->prepare("SELECT user_id FROM user_profiles WHERE user_id = ?");
                 $stmt->execute([$user['id']]);
                 if (!$stmt->fetch()) {
-                    // Tạo profile mặc định
                     $stmt = $conn->prepare("INSERT INTO user_profiles (user_id) VALUES (?)");
                     $stmt->execute([$user['id']]);
                 }
@@ -45,7 +40,6 @@ if (isset($_POST['resetPW'])) {
 
             $conn->commit();
 
-            // Xóa các session liên quan đến xác thực
             unset($_SESSION['verify_email']);
             unset($_SESSION['verification_id']);
             unset($_SESSION['verified_email']);
@@ -68,7 +62,6 @@ if (isset($_POST['resetPW'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cập nhật mật khẩu</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -122,9 +115,7 @@ if (isset($_POST['resetPW'])) {
         </div>
     </div>
 
-    <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
     <script>
     document.querySelectorAll('.toggle-password').forEach(btn => {

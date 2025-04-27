@@ -7,13 +7,11 @@ function checkAuth() {
         exit();
     }
     
-    // Kiểm tra session token có hợp lệ không
     try {
         $stmt = $conn->prepare("SELECT * FROM user_sessions WHERE user_id = ? AND token = ?");
         $stmt->execute([$_SESSION['user_id'], $_SESSION['session_token']]);
         
         if (!$stmt->fetch()) {
-            // Session không hợp lệ, đăng xuất
             session_destroy();
             header("Location: login.php");
             exit();

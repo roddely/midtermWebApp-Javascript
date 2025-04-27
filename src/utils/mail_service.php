@@ -4,8 +4,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-// Sử dụng đường dẫn tuyệt đối
-$rootPath = dirname(dirname(__DIR__)); // Lấy thư mục gốc của project
+$rootPath = dirname(dirname(__DIR__)); 
 require $rootPath . '/vendor/phpmailer/phpmailer/src/Exception.php';
 require $rootPath . '/vendor/phpmailer/phpmailer/src/PHPMailer.php';
 require $rootPath . '/vendor/phpmailer/phpmailer/src/SMTP.php';
@@ -14,19 +13,11 @@ function sendVerificationEmail($to, $verificationToken, &$errorMsg = null) {
     try {
         $mail = new PHPMailer(true);
         
-        // Tắt debug
         $mail->SMTPDebug = SMTP::DEBUG_OFF;
-        // Nếu muốn debug ra file, bỏ comment dòng dưới:
-        // $mail->Debugoutput = function($str, $level) {
-        //     file_put_contents('mail_debug.log', $str . PHP_EOL, FILE_APPEND);
-        // };
-
-        // Cấu hình cơ bản
         $mail->isSMTP();
         $mail->Host = SMTP_HOST;
         $mail->Port = SMTP_PORT;
         
-        // Cấu hình xác thực
         $mail->SMTPAuth = true;
         $mail->SMTPSecure = 'tls';
         

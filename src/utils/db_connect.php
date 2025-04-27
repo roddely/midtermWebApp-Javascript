@@ -13,7 +13,6 @@ try {
         ]
     );
 } catch(PDOException $e) {
-    // Log error for debugging but show generic message to users
     error_log("Database Connection Error: " . $e->getMessage());
     die("Không thể kết nối đến database. Vui lòng thử lại sau.");
 }

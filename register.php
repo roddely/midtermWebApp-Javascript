@@ -3,7 +3,6 @@ session_start();
 require_once 'src/utils/db_connect.php';
 require_once 'src/utils/mail_service.php';
 
-// Đầu register.php, sau session_start()
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 function generateUUID() {
@@ -29,21 +28,17 @@ if(isset($_POST['verify_email'])) {
     if(empty($email)) {
         $error = "Vui lòng nhập email";
     } else {
-        // Kiểm tra email đã tồn tại
         $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
         $stmt->execute([$email]);
         if($stmt->rowCount() > 0) {
             $error = "Email đã được sử dụng";
         } else {
-            // Tạo mã xác thực mới
             $verification_id = generateUUID();
             $token = generateVerificationToken();
             $expires_at = date('Y-m-d H:i:s', strtotime('+5 minutes'));
             
-            // Lưu thông tin xác thực
             $stmt = $conn->prepare("INSERT INTO email_verification (id, email, token, expires_at) VALUES (?, ?, ?, ?)");
             if($stmt->execute([$verification_id, $email, $token, $expires_at])) {
-                // Gửi email xác thực
                 if(sendVerificationEmail($email, $token, $mailError)) {
                     $_SESSION['verify_source'] = 'register';
                     $_SESSION['verify_email'] = $email;
@@ -67,7 +62,6 @@ if(isset($_POST['verify_email'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng ký</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -105,9 +99,7 @@ if(isset($_POST['verify_email'])) {
         </div>
     </div>
 
-    <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
 </body>
 </html> 

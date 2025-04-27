@@ -4,9 +4,8 @@ require_once 'src/utils/db_connect.php';
 require_once 'src/utils/functions.php';
 require_once 'src/utils/mail_service.php';
 
-date_default_timezone_set('Asia/Ho_Chi_Minh'); //Đặt múi giờ cho Việt Nam
+date_default_timezone_set('Asia/Ho_Chi_Minh');
 
-// Kiểm tra xem có email đang chờ xác thực không
 if(!isset($_SESSION['verify_email']) || !isset($_SESSION['verification_id'])) {
     header("Location: register.php");
     exit();
@@ -18,7 +17,6 @@ if(isset($_POST['verify'])) {
     if(empty($token)) {
         $error = "Vui lòng nhập mã xác thực";
     } else {
-        // Kiểm tra mã xác thực
         $stmt = $conn->prepare("
             SELECT * FROM email_verification 
             WHERE id = ? AND email = ? AND token = ? AND expires_at > NOW() AND is_used = FALSE
@@ -26,14 +24,11 @@ if(isset($_POST['verify'])) {
         $stmt->execute([$_SESSION['verification_id'], $_SESSION['verify_email'], $token]);
         
         if($row = $stmt->fetch()) {
-            // Đánh dấu mã đã sử dụng
             $stmt = $conn->prepare("UPDATE email_verification SET is_used = TRUE WHERE id = ?");
             $stmt->execute([$_SESSION['verification_id']]);
             
-            // Lưu email đã xác thực vào session
             $_SESSION['verified_email'] = $row['email'];
             
-            // Chuyển hướng dựa trên nguồn gốc
             if (isset($_SESSION['verify_source']) && $_SESSION['verify_source'] === 'reset_password') {
                 header("Location: complete_resetPW.php");
             } else {
@@ -45,7 +40,6 @@ if(isset($_POST['verify'])) {
     }
 }
 
-// Gửi lại mã xác thực
 if(isset($_POST['resend'])) {
     $token = generateVerificationToken();
     $verification_id = generateUUID();
@@ -70,7 +64,6 @@ if(isset($_POST['resend'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xác thực email</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -110,7 +103,6 @@ if(isset($_POST['resend'])) {
                 </div>
             </form>
             
-            <!-- Quay lại trang đăng ký hoặc reset mật khẩu -->
             <div class="auth-footer">
                 <p class="mb-0">
                     <a href="<?php echo (isset($_SESSION['verify_source']) && $_SESSION['verify_source'] === 'reset_password') ? 'otp_resetPW.php' : 'register.php'; ?>" class="text-muted">
@@ -121,9 +113,7 @@ if(isset($_POST['resend'])) {
         </div>
     </div>
 
-    <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
     <script>
     let resendBtn = document.querySelector('button[name="resend"]');
@@ -148,7 +138,6 @@ if(isset($_POST['resend'])) {
         resendBtn.textContent = countdown > 0 ? `Gửi lại mã xác thực (${countdown}s)` : "Gửi lại mã xác thực";
     }
 
-    // Nếu vừa gửi lại mã xác thực hoặc vừa chuyển từ register hoặc otp_resetPW sang, bắt đầu đếm ngược
     <?php if(isset($_POST['resend']) || (isset($_SESSION['verify_source']) && in_array($_SESSION['verify_source'], ['register', 'reset_password']))): ?>
         startCountdown(60);
     <?php endif; ?>
