@@ -3,6 +3,13 @@ session_start();
 require_once 'src/utils/db_connect.php';
 require_once 'src/utils/functions.php';
 
+// Hàm lấy địa chỉ IP (tái sử dụng từ login.php)
+function getUserIP() {
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) return $_SERVER['HTTP_CLIENT_IP'];
+    if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) return $_SERVER['HTTP_X_FORWARDED_FOR'];
+    return $_SERVER['REMOTE_ADDR'];
+}
+
 if (!isset($_SESSION['verified_email'])) {
     header("Location: register.php");
     exit();
@@ -24,6 +31,11 @@ if (isset($_POST['resetPW'])) {
 
             $stmt = $conn->prepare("UPDATE users SET password_hash = ? WHERE email = ?");
             $stmt->execute([$password_hash, $_SESSION['verified_email']]);
+
+            // Xóa bản ghi IP trong bảng login_attempts_ip
+            $ip = getUserIP();
+            $stmt = $conn->prepare("DELETE FROM login_attempts_ip WHERE ip = ?");
+            $stmt->execute([$ip]);
 
             $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
             $stmt->execute([$_SESSION['verified_email']]);

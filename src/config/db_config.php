@@ -1,8 +1,8 @@
 <?php
 define('DB_HOST', 'localhost');
-define('DB_USER', 'nhathao');
-define('DB_PASS', 'Nhathao22');
 define('DB_NAME', 'midterm_webapp');
+define('DB_USER', 'Phuc');
+define('DB_PASS', '12345');
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 try {

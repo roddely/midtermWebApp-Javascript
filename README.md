@@ -6,7 +6,7 @@ Chạy file sql
 Vào db_config.php
 Chỉnh lại Host của database
 
-composer require phpmailer/phpmailer
+composer require phpmailer/phpmailer    
 
 =======================================
 Thiết lập gửi mail

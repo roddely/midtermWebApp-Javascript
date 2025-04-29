@@ -3,22 +3,21 @@ ini_set('display_errors', 0);
 error_reporting(0);
 require_once 'vendor/autoload.php';
 require_once 'src/bootstrap.php';
-require_once 'src/utils/auth_middleware.php';
+require_once 'src/utils/jwt_auth.php';
 
-checkAuth();
-
+$jwt = require_jwt_auth();
 $ga = new PHPGangsta_GoogleAuthenticator();
 $error = null;
 $success = null;
 
 $stmt = $conn->prepare("SELECT two_factor_secret FROM users WHERE id = ?");
-$stmt->execute([$_SESSION['user_id']]);
+$stmt->execute([$jwt->user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$user['two_factor_secret']) {
     $secret = $ga->createSecret();
     $stmt = $conn->prepare("UPDATE users SET two_factor_secret = ? WHERE id = ?");
-    $stmt->execute([$secret, $_SESSION['user_id']]);
+    $stmt->execute([$secret, $jwt->user_id]);
 } else {
     $secret = $user['two_factor_secret'];
 }
@@ -27,7 +26,7 @@ if (isset($_POST['verify'])) {
     $code = trim($_POST['code']);
     if ($ga->verifyCode($secret, $code, 2)) {
         $stmt = $conn->prepare("UPDATE users SET two_factor_enabled = TRUE WHERE id = ?");
-        $stmt->execute([$_SESSION['user_id']]);
+        $stmt->execute([$jwt->user_id]);
         $success = "Thiết lập 2FA thành công!";
         header("refresh:2;url=index.php");
     } else {
@@ -91,4 +90,4 @@ $qrCodeUrl = $ga->getQRCodeGoogleUrl('Auth System', $secret);
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html> 
+</html>
